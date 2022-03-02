@@ -1,0 +1,294 @@
+{% extends 'base_logeado.html' %}
+
+{% block header %}
+<h1>{% block title %} Formulario de Agenda {% endblock %}</h1>
+{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js"></script>
+{% block content %}
+
+{% with mensajes = get_flashed_messages() %}
+{% if mensajes %}
+{% for m in mensajes %}
+
+<script>
+    Swal.fire({
+        position: 'center',
+        icon: 'success',
+        text: '{{m}}',
+
+        showConfirmButton: true,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'Ok',
+
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: true,
+        stopKeydownPropagation: false,
+    })
+</script>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<style>
+h3 {
+    margin-top: 10px;
+}
+
+#contenedor{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+    margin-top: 10px;
+}
+form{
+    content: center;
+    background-color: #71A5DE;
+    text-decoration: white;
+    text-align: center;
+}
+#btn{
+    margin-top: 20px;
+    background:#143179 ;
+}
+#form-rec{
+    margin-left: auto;
+    margin-right: auto;
+}
+label {
+    margin: 5px 0;
+}
+.blue{
+    color: blue;
+}
+</style>
+
+<body onload="brython()" id="bodi">
+    <h3>Crear agenda</h3>
+<div class="container" id="contenedor">
+    <div class="abs-center col-md-8 col-xl-7" id="form-rec">
+    <form method="" name="f1" class="border p-5 form">
+        <div class="form-group">
+            <label for="fechaentrada" style="color:black">Fecha de entrada</label>
+            <input name="fechaentrada" id="fechaentrada" type="date" class="form-control" style="color:black" required/>
+        </div>
+        <div class="form-group">
+            <label for="hora_incio" style="color: black;">Hora de inicio</label>
+            <input type="time" id="horainicio" name="hora_incio" class="form-control" style="color: black;" required>
+            <label for="hora_termino" style="color: black;">Hora de termino</label>
+            <input type="time" name="hora_termino" id="horatermino" class="form-control" style="color: black;" required>
+        </div>
+        <div class="form-group">
+            <label for="cargo" style="color:black">Cargo</label>
+            <input name="cargo" id="cargo" class="form-control" style="color:black" required/>
+        </div>
+        <div class="form-group">
+            <label for="nombre" style="color:black">Nombre</label>
+            <select name="nombre" id="nombre" class="form-control" style="color:black">
+                <option value="Sandra Alvarez">Ministra Alvarez</option>
+                <option value="Mauricio Oviedo">Ministro Oviedo</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="actividad" style="color:black">Actividad</label>
+            <select name="actividad" id="actividad" class="form-control" style="color: black;">
+                <option value="SIN DEFINIR">SIN DEFINIR</option>
+                <option value="ACTIVIDAD DE CAPACITACION">ACTIVIDAD DE CAPACITACION</option>
+                <option value="ACTIVIDAD DE DOCENCIA">ACTIVIDAD DE DOCENCIA</option>
+                <option value="ACTIVIDADES GREMIALES">ACTIVIDADES GREMIALES</option>
+                <option value="AUDIENCIA PRIVADA O ENTREVISTA">AUDIENCIA PRIVADA O ENTREVISTA</option>
+                <option value="COMISION DE SERVICIO">COMISION DE SERVICIO</option>
+                <option value="REUNION DE TRABAJO O COORDINACION">REUNION DE TRABAJO O COORDINACION</option>
+                <option value="OTRAS">OTRAS</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="lugar" style="color:black">Lugar</label>
+            <input name="lugar" id="lugar" class="form-control" style="color:black" required/>
+        </div>
+        <!-- <div class="form-group">
+            <label for="participantes" style="color:black">Participantes</label>
+            <input name="participantes" id="participantes" class="form-control" style="color:black" required/>
+        </div> -->
+
+
+
+<style>
+.selectBox{
+    position: relative;
+}
+.selectBox select {
+    width: 100%;
+    height: 40px;
+}
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+#checkboxes {
+    display: none;
+}
+#checkboxes label {
+    display: block;
+}
+#checkboxes label:hover {
+    background-color: #1e90ff;
+}
+</style>
+        <div class="form-group">
+            <label for="participantes" style="color:black">Participantes</label>
+            <div class="selectBox" onclick="showCheckboxes()">
+                <select>
+                    <option>Selecciona a los participantes</option>
+                </select>
+                <div class="overSelect"></div>
+            </div>
+            <div id="checkboxes">
+                <label for="c1"><input type="checkbox" id="p1" name="Participante01" value="Valor del check01"/>Participante 01</label>
+                <label for="c2"><input type="checkbox" id="p2" name="Participante02" value="Valor del check02"/>Participante 02</label>
+                <label for="c3"><input type="checkbox" id="p3" name="Participante03" value="Valor del check03"/>Participante 03</label>
+                <label for="c4"><input type="checkbox" id="p4" name="Participante04" value="Valor del check04"/>Participante 04</label>
+            </div>
+        </div>
+
+        <div class="form-group">    
+            <label for="detalle" style="color:black">Detalle</label>
+            <textarea name="detalle" id="detalle" class="form-control" style="color:black" required></textarea>
+        </div>
+        <input value="registrar" id="btn" class="btn btn-primary" onclick="agregar_act();">
+    </form>
+    </div>
+</div>
+
+<script>
+var expanded = false;
+
+function showCheckboxes() {
+  var checkboxes = document.getElementById("checkboxes");
+  if (!expanded) {
+    checkboxes.style.display = "block";
+    expanded = true;
+  } else {
+    checkboxes.style.display = "none";
+    expanded = false;
+  }
+}
+
+var check01 = document.getElementById('p1');
+var check02 = document.getElementById('p2');
+var check03 = document.getElementById('p3');
+var check04 = document.getElementById('p4');
+
+var lista_participantes = []
+
+check01.addEventListener('click', function() {
+
+    if (check01.checked) {
+        var valor = document.getElementById('p1').value;    
+        lista_participantes.push(valor)
+        console.log("lista:", lista_participantes)    
+
+        var fechaentrada = document.getElementById('fechaentrada').value;
+        console.log("fechaentrada: ",fechaentrada)
+
+    } else {
+        var valor = document.getElementById('p1').value;
+        lista_participantes = lista_participantes.filter(function(item) {
+            return item !== valor
+        })
+        console.log("lista:", lista_participantes)
+    }
+
+})
+check02.addEventListener('click', function() {
+
+if (check02.checked) {
+    var valor = document.getElementById('p2').value;    
+    lista_participantes.push(valor)
+    console.log("lista:", lista_participantes)    
+
+} else {
+    var valor = document.getElementById('p2').value;
+    lista_participantes = lista_participantes.filter(function(item) {
+        return item !== valor
+    })
+    console.log("lista:", lista_participantes)
+}
+
+})
+check03.addEventListener('click', function() {
+
+if (check03.checked) {
+    var valor = document.getElementById('p3').value;    
+    lista_participantes.push(valor)
+    console.log("lista:", lista_participantes)    
+
+} else {
+    var valor = document.getElementById('p3').value;
+    lista_participantes = lista_participantes.filter(function(item) {
+        return item !== valor
+    })
+    console.log("lista:", lista_participantes)
+}
+
+})
+check04.addEventListener('click', function() {
+
+if (check04.checked) {
+    var valor = document.getElementById('p4').value;    
+    lista_participantes.push(valor)
+    console.log("lista:", lista_participantes)    
+
+} else {
+    var valor = document.getElementById('p4').value;
+    lista_participantes = lista_participantes.filter(function(item) {
+        return item !== valor
+    })
+    console.log("lista:", lista_participantes)
+}
+
+})
+
+function agregar_act() {
+
+    // var fechaentrada = document.getElementById('fechaentrada').value;
+    // var horainico = document.getElementById('horainicio').value;
+    // var horatermino = document.getElementById('horatermino').value;
+    // var cargo = document.getElementById('cargo').value;
+    // var nombre = document.getElementById('nombre').value;
+    // var actividad = document.getElementById('actividad').value;
+    // var lugar = document.getElementById('lugar').value;
+    var participantes = lista_participantes;
+    // var detalle = document.getElementById('detalle').value;
+    
+    console.log("lista", horainico)
+
+    $.ajax({
+        method: 'POST',
+        url: '/formulario',
+        data: {
+            // "fechaentrada": fechaentrada,
+            // "horainico": horainico,
+            // "horatermino": horatermino,
+            // "cargo": cargo,
+            // "nombre": nombre,
+            // "actividad": actividad,
+            // "lugar": lugar,
+            "participantes": participantes,
+            // "detalle": detalle
+        },
+    });
+}
+
+</script>
+
+</body>
+
+
+{% endblock %}

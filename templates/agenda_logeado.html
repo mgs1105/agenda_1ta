@@ -1,0 +1,312 @@
+{% extends 'base_logeado.html' %}
+
+{% block header %}
+<h1>{% block title %} {% endblock %}</h1>
+{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js"></script>
+{% block content %}
+
+{% with mensajes = get_flashed_messages() %}
+{% if mensajes %}
+{% for m in mensajes %}
+{% if m == '¿Seguro que desea cerrar sesion?' %}
+
+<script>
+    Swal.fire({
+        position: 'center',
+        icon: 'question',
+        text: '{{m}}',
+
+        //boton cerrar sesion
+        showConfirmButton: true,
+        confirmButtonColor: '#df4759',
+        confirmButtonAriaLabel: 'Cerrar sesion',
+        confirmButtonText: 'Cerrar sesion',
+
+        //boton volver
+        showCancelButton: true,
+        cancelButtonColor: '#24A0ED',
+
+        //Condicioon de la alerta (no se cierra al hacer el click en otros lugares que no sean los botones. si todos son false)
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                method: 'POST',
+                dataType: 'json',
+                url: "/cerrar_sesion",
+            });
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                text: 'Sesion cerrada con exito',
+
+                showConfirmButton: true,
+                confirmButtonColor: '#3E60E9',
+                confirmButtonAriaLabel: 'volver',
+                confirmButtonText: 'volver',
+
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                stopKeydownPropagation: false,
+            }).then((isConfirmed) => {
+                window.location.href = '/';
+            })
+        } else {
+            window.location.href = '/agenda';
+        }
+    })
+</script>
+
+{% else %}
+
+<script>
+Swal.fire({
+    position: 'center',
+    icon: 'question',
+    text: "¿Seguro que desea eliminar la actividad '{{actividad}}'?",
+
+    // boton eliminar
+    showConfirmButton: true,
+    confirmButtonColor: '#df4759',
+    confirmButtonAriaLabel: 'Eliminar',
+    confirmButtonText: 'Eliminar',
+
+    // boton volver
+    showCancelButton: true,
+    cancelButtonColor: '#24a0ed',
+
+    //condiciones de la alerta (no se cierra al hacer click en otro lugar que no sean los botones)
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    stopKeydownPropagation: false,
+
+}).then((result) => {
+    if (result.isConfirmed) {
+        $.ajax({
+            method: 'POST',
+            url: '/eliminar/{{m}}',
+        });
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            text: "La actividad '{{actividad}}' ha sido eliminada con exito",
+
+            showConfirmButton: true,
+            confirmButtonColor: '#3E60E9',
+            confirmButtonAriaLabel: 'volver',
+            confirmButtonText: 'volver',
+
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            stopKeydownPropagation: false,
+        }).then((isConfirmed) => {
+            window.location.href = '/agenda';
+        });
+    } else {
+        window.location.href = '/agenda';
+    }
+})
+</script>
+
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+<style>
+#cabecera {
+    background-color: #00679A;
+    color: white;
+}
+#oscuro{
+    background-color: #003658;
+    color: white;
+}
+#claro{
+    background-color: #0E4B6A;
+    color: white;
+}
+#botones {
+    padding: 10px;
+}
+#eliminar {
+    background-color: red;
+    color: white;
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 5px;
+}
+#editar {
+    background-color: blue;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 5px; 
+}
+</style>
+<body>
+
+    <div class="container" id="contenedor">
+        <br>
+        <div class="abs-center col-xl-2" id="form-rec">
+            <div class="form-group">
+                <select name="opcion" id="opcion" class="form-control" style="color:black" onchange="cargar_oviedo(this)">
+                    <option value="">Ministro Mauricio Oviedo</option>
+                    <option value="01">M. Oviedo (Enero)</option>
+                    <option value="02">M. Oviedo (Febrero)</option>
+                    <option value="03">M. Oviedo (Marzo)</option>
+                    <option value="04">M. Oviedo (Abril)</option>
+                    <option value="05">M. Oviedo (Mayo)</option>
+                    <option value="06">M. Oviedo (Junio)</option>
+                    <option value="07">M. Oviedo (Julio)</option>
+                    <option value="08">M. Oviedo (Agosto)</option>
+                    <option value="09">M. Oviedo (Septiembre)</option>
+                    <option value="10">M. Oviedo (Octubre)</option>
+                    <option value="11">M. Oviedo (Noviembre)</option>
+                    <option value="12">M. Oviedo (Diciembre)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="estado" id="estado" class="form-control" style="color:black" onchange="cargar_alvarez(this)">
+                    <option value="">Ministra Sandra Alvarez</option>
+                    <option value="01">M. Alvarez (Enero)</option>
+                    <option value="02">M. Alvarez (Febrero)</option>
+                    <option value="03">M. Alvarez (Marzo)</option>
+                    <option value="04">M. Alvarez (Abril)</option>
+                    <option value="05">M. Alvarez (Mayo)</option>
+                    <option value="06">M. Alvarez (Junio)</option>
+                    <option value="07">M. Alvarez (Julio)</option>
+                    <option value="08">M. Alvarez (Agosto)</option>
+                    <option value="09">M. Alvarez (Septiembre)</option>
+                    <option value="10">M. Alvarez (Octubre)</option>
+                    <option value="11">M. Alvarez (Noviembre)</option>
+                    <option value="12">M. Alvarez (Diciembre)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <br><br><br>
+    <div id="tabla-tareas" class="container">
+        <table id="tabla_tareas" class="table table-striped table-bordered bg-white table-sm">
+            <thead class="thead-primary">
+                <tr class="thead-primary" id="cabecera">
+                    <th>Estado</th>
+                    <th>Fecha - Hora</th>
+                    <th>Cargo</th>
+                    <th>Nombre</th>
+                    <th>Actividad</th>
+                    <th>Lugar</th>
+                    <th>Participantes</th>
+                    <th>Detalles</th>
+                    <th></th>
+                    <!-- <th></th> -->
+                </tr>
+            </thead>
+            <tbody id="cuerpo_tabla">
+                {% for agenda in data %}
+                <tr>
+                    <td id="oscuro">{{agenda.estado}}</td>
+                    <td id="claro">{{agenda.fecha}} ( {{agenda.hora}} ) </td>
+                    <td id="oscuro">{{agenda.cargo}}</td>
+                    <td id="claro">{{agenda.nombre}}</td>
+                    <td id="oscuro">{{agenda.actividad}}</td>
+                    <td id="claro">{{agenda.lugar}}</td>
+                    <td id="oscuro">{{agenda.participantes}}</td>
+                    <td id="claro">{{agenda.detalles}}</td>
+                    <!-- <td id="botones"> <a id="editar" href="/editar/{{agenda.id}}">Editar</a> </td> -->
+                    <td id="botones"> <a id="eliminar" href="/alerta_eliminar/{{agenda.id}}">Eliminar</a> </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table> <br>
+    </div>
+
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+function cargar_oviedo(opcion) {
+    if (opcion.value != "") {
+        $.ajax({
+            method: 'POST',
+            url: "/filtro_oviedo",
+            data: {"opcion": opcion.value},
+            success: function(result) {
+                $("#cuerpo_tabla").html("");
+                for (var i = 0; i< result.length; i++) {
+
+                        var editar = `<a id="editar" href=/editar/`+ result[i].id + `> Editar</a>`;
+                        var eliminar = `<a id="eliminar" href=/alerta_eliminar/` + result[i].id + ` >Eliminar</a>`;
+
+                        var tr = `<tr>
+                        <td id="oscuro">`+ result[i].estado +`</td>
+                        <td id="claro">`+ result[i].fecha + " ( " + (result[i].hora) + " ) " +`</td>
+                        <td id="oscuro">`+ result[i].cargo +`</td>
+                        <td id="claro">`+ result[i].nombre +`</td>
+                        <td id="oscuro">`+ result[i].actividad +`</td>     
+                        <td id="claro">`+ result[i].lugar +`</td>
+                        <td id="oscuro">`+ result[i].participantes +`</td>
+                        <td id="claro">`+ result[i].detalles +`</td>
+                        <td>`+ editar +`</td>
+                        <td>`+ eliminar +`</td>
+                        </tr>`;
+                        $("#cuerpo_tabla").append(tr)
+                    }
+            }
+        })
+    }
+}
+    
+function cargar_alvarez(opcion){
+    if (opcion.value != "") {
+        $.ajax({
+            method: 'POST',
+            url: "/filtro_alvarez",
+            data: {"opcion": opcion.value},
+            success: function(result) {
+                $("#cuerpo_tabla").html("");
+                for (var i = 0; i< result.length; i++) {
+                    
+                    var editar = `<a id="editar" href=/editar/`+ result[i].id + `> Editar</a>`;
+                    var eliminar = `<a id="eliminar" href=/alerta_eliminar/` + result[i].id + ` >Eliminar</a>`;
+
+                    var tr = `<tr>
+                        <td id="oscuro">`+ result[i].estado +`</td>
+                        <td id="claro">`+ result[i].fecha + " ( " + (result[i].hora) + " ) " + `</td>
+                        <td id="oscuro">`+ result[i].cargo +`</td>
+                        <td id="claro">`+ result[i].nombre +`</td>
+                        <td id="oscuro">`+ result[i].actividad +`</td>     
+                        <td id="claro">`+ result[i].lugar +`</td>
+                        <td id="oscuro">`+ result[i].participantes +`</td>
+                        <td id="claro">`+ result[i].detalles +`</td>
+                        <td>`+ editar +`</td>
+                        <td>`+ eliminar +`</td>
+                        </tr>`;
+                        $("#cuerpo_tabla").append(tr)
+                }
+            }
+        })
+    }    
+}
+</script>
+
+</body>  
+
+{% endblock %}
